@@ -1,0 +1,15 @@
+/Users/ezh_off/Documents/GitHub/VU/Object-Oriented Programming /CSharp_FinalProject/Master/bin/Debug/net9.0/Master
+/Users/ezh_off/Documents/GitHub/VU/Object-Oriented Programming /CSharp_FinalProject/Master/bin/Debug/net9.0/Master.deps.json
+/Users/ezh_off/Documents/GitHub/VU/Object-Oriented Programming /CSharp_FinalProject/Master/bin/Debug/net9.0/Master.runtimeconfig.json
+/Users/ezh_off/Documents/GitHub/VU/Object-Oriented Programming /CSharp_FinalProject/Master/bin/Debug/net9.0/Master.dll
+/Users/ezh_off/Documents/GitHub/VU/Object-Oriented Programming /CSharp_FinalProject/Master/bin/Debug/net9.0/Master.pdb
+/Users/ezh_off/Documents/GitHub/VU/Object-Oriented Programming /CSharp_FinalProject/Master/obj/Debug/net9.0/Master.GeneratedMSBuildEditorConfig.editorconfig
+/Users/ezh_off/Documents/GitHub/VU/Object-Oriented Programming /CSharp_FinalProject/Master/obj/Debug/net9.0/Master.AssemblyInfoInputs.cache
+/Users/ezh_off/Documents/GitHub/VU/Object-Oriented Programming /CSharp_FinalProject/Master/obj/Debug/net9.0/Master.AssemblyInfo.cs
+/Users/ezh_off/Documents/GitHub/VU/Object-Oriented Programming /CSharp_FinalProject/Master/obj/Debug/net9.0/Master.csproj.CoreCompileInputs.cache
+/Users/ezh_off/Documents/GitHub/VU/Object-Oriented Programming /CSharp_FinalProject/Master/obj/Debug/net9.0/Master.sourcelink.json
+/Users/ezh_off/Documents/GitHub/VU/Object-Oriented Programming /CSharp_FinalProject/Master/obj/Debug/net9.0/Master.dll
+/Users/ezh_off/Documents/GitHub/VU/Object-Oriented Programming /CSharp_FinalProject/Master/obj/Debug/net9.0/refint/Master.dll
+/Users/ezh_off/Documents/GitHub/VU/Object-Oriented Programming /CSharp_FinalProject/Master/obj/Debug/net9.0/Master.pdb
+/Users/ezh_off/Documents/GitHub/VU/Object-Oriented Programming /CSharp_FinalProject/Master/obj/Debug/net9.0/Master.genruntimeconfig.cache
+/Users/ezh_off/Documents/GitHub/VU/Object-Oriented Programming /CSharp_FinalProject/Master/obj/Debug/net9.0/ref/Master.dll
