@@ -7,3 +7,5 @@
 ## Commit history:
 
 **Commit 0**: Create projects Agent and Master. Add .gitignore. Update README.md
+
+**Commit 1**: Add File Structure to Agent and Master
