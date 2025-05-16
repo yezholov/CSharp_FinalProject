@@ -1,0 +1,15 @@
+/Users/ezh_off/Documents/GitHub/VU/Object-Oriented Programming /CSharp_FinalProject/Agent/bin/Debug/net9.0/Agent
+/Users/ezh_off/Documents/GitHub/VU/Object-Oriented Programming /CSharp_FinalProject/Agent/bin/Debug/net9.0/Agent.deps.json
+/Users/ezh_off/Documents/GitHub/VU/Object-Oriented Programming /CSharp_FinalProject/Agent/bin/Debug/net9.0/Agent.runtimeconfig.json
+/Users/ezh_off/Documents/GitHub/VU/Object-Oriented Programming /CSharp_FinalProject/Agent/bin/Debug/net9.0/Agent.dll
+/Users/ezh_off/Documents/GitHub/VU/Object-Oriented Programming /CSharp_FinalProject/Agent/bin/Debug/net9.0/Agent.pdb
+/Users/ezh_off/Documents/GitHub/VU/Object-Oriented Programming /CSharp_FinalProject/Agent/obj/Debug/net9.0/Agent.GeneratedMSBuildEditorConfig.editorconfig
+/Users/ezh_off/Documents/GitHub/VU/Object-Oriented Programming /CSharp_FinalProject/Agent/obj/Debug/net9.0/Agent.AssemblyInfoInputs.cache
+/Users/ezh_off/Documents/GitHub/VU/Object-Oriented Programming /CSharp_FinalProject/Agent/obj/Debug/net9.0/Agent.AssemblyInfo.cs
+/Users/ezh_off/Documents/GitHub/VU/Object-Oriented Programming /CSharp_FinalProject/Agent/obj/Debug/net9.0/Agent.csproj.CoreCompileInputs.cache
+/Users/ezh_off/Documents/GitHub/VU/Object-Oriented Programming /CSharp_FinalProject/Agent/obj/Debug/net9.0/Agent.sourcelink.json
+/Users/ezh_off/Documents/GitHub/VU/Object-Oriented Programming /CSharp_FinalProject/Agent/obj/Debug/net9.0/Agent.dll
+/Users/ezh_off/Documents/GitHub/VU/Object-Oriented Programming /CSharp_FinalProject/Agent/obj/Debug/net9.0/refint/Agent.dll
+/Users/ezh_off/Documents/GitHub/VU/Object-Oriented Programming /CSharp_FinalProject/Agent/obj/Debug/net9.0/Agent.pdb
+/Users/ezh_off/Documents/GitHub/VU/Object-Oriented Programming /CSharp_FinalProject/Agent/obj/Debug/net9.0/Agent.genruntimeconfig.cache
+/Users/ezh_off/Documents/GitHub/VU/Object-Oriented Programming /CSharp_FinalProject/Agent/obj/Debug/net9.0/ref/Agent.dll
