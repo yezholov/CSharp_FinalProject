@@ -1,0 +1,37 @@
+using Master.Models;
+
+namespace Master.Services
+{
+    public class ResultPrinter
+    {
+        public void PrintToConsole(AggregatedIndex aggregatedIndex)
+        {
+            if (aggregatedIndex == null || !aggregatedIndex.HasData())
+            {
+                Console.WriteLine("--- Start of Report ---\n");
+                Console.WriteLine("No data to display.");
+                Console.WriteLine("--- End of Report ---");
+                return;
+            }
+
+            var groupedByFile = aggregatedIndex
+                .GetSortedEntries()
+                .GroupBy(entry => entry.FileName)
+                .OrderBy(entry => entry.Key);
+
+            Console.WriteLine("\n--- Start of Report ---");
+
+            foreach (var fileGroup in groupedByFile)
+            {
+                Console.WriteLine($"File: {fileGroup.Key}");
+                Console.WriteLine("  Word                Count");
+                Console.WriteLine("  ------------------- -----");
+                foreach (var entry in fileGroup)
+                {
+                    Console.WriteLine($"  {entry.Word, -20} {entry.Count, 5}");
+                }
+            }
+            Console.WriteLine("--- End of Report ---\n");
+        }
+    }
+}
