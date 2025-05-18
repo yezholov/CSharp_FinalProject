@@ -30,6 +30,7 @@ namespace Master.Services
                 {
                     Console.WriteLine($"  {entry.Word, -20} {entry.Count, 5}");
                 }
+                Console.WriteLine();
             }
             Console.WriteLine("--- End of Report ---\n");
         }

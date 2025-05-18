@@ -21,3 +21,6 @@ To test this version first start the Agent, type: `dotnet run ../TestData 1`; th
 
 **Commit 5**: Created `AgentData`, `AggregatedIndex`, `DataAggregator` and `ResultPrinter`, for grouping and sorting data within the data of one file. Update Program.cs.
 To test this version first start the Agent, type: `dotnet run ../TestData 1`; then start the Master, type: `dotnet run. `
+
+**Commit 6**: Added support for multiple Agents, improved error handling. Updated `Program.cs`, improved output of multiple files in `ResultPrinter.cs`. Added aditional file with text: `test_data2.txt`.
+To test this version first start the first Agent, type: `dotnet run ../TestData 1` and the second Agent, type: `dotnet run ../TestData 2`; then start the Master, type: `dotnet run. `
