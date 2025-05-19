@@ -3,17 +3,21 @@ using Agent.Services;
 
 class Program
 {
-    private const string ShutdownCommand = "SHUTDOWN";
-
     static async Task Main(string[] args)
     {
         if (args.Length < 2)
         {
-            Console.WriteLine("Command: Agent <base_directory_path> <agent_id_for_pipe>");
+            Console.WriteLine("Command: Agent <directory_path> <agent_id_for_pipe>");
             return;
         }
 
-        string baseDirectoryPath = FileHelper.NormalizePath(args[0]);
+        string directoryPath = FileHelper.NormalizePath(args[0]);
+        if (!Directory.Exists(directoryPath))
+        {
+            Console.WriteLine($"Error: Directory '{directoryPath}' does not exist.");
+            return;
+        }
+
         if (!int.TryParse(args[1], out int agentId) || agentId <= 0)
         {
             Console.WriteLine("Error: Agent ID must be a positive integer for pipe naming.");
@@ -21,68 +25,49 @@ class Program
         }
 
         string pipeName = $"agent{agentId}_pipe";
-        using var pipeClient = new PipeClient(pipeName);
+        string agentName = $"Agent {agentId}";
+
+        using var pipeClient = new PipeClient(pipeName, agentName);
         var scanner = new FileScanner();
-        bool keepRunning = true;
 
         Console.WriteLine(
-            $"Agent {agentId} started. \nDirectory: '{baseDirectoryPath}'. \nPipe: '{pipeName}'. \nWaiting for Master..."
+            $"Agent {agentId} started. \nDirectory: '{directoryPath}'. \nPipe: '{pipeName}'. \nWaiting for Master...\n"
         );
 
-        while (keepRunning)
+        try
         {
-            try
+            if (!pipeClient.IsConnected)
             {
-                if (!pipeClient.IsConnected)
-                {
-                    await pipeClient.ConnectAsync();
-                }
-
-                string? command = await pipeClient.ReceiveCommandAsync();
-
-                if (string.IsNullOrEmpty(command))
-                {
-                    Console.WriteLine($"Agent {agentId}: Connection lost or empty command.");
-                    pipeClient.Close();
-                    await Task.Delay(2000);
-                    continue;
-                }
-
-                if (command.Equals(ShutdownCommand, StringComparison.OrdinalIgnoreCase))
-                {
-                    Console.WriteLine($"Agent {agentId}: Shutdown command received.");
-                    keepRunning = false;
-                    continue;
-                }
-
-                string fileNameToProcess = command;
-                string fullPathToFile = Path.Combine(baseDirectoryPath, fileNameToProcess);
-                var fileIndexResult = await scanner.ScanFileAsync(fullPathToFile);
-                await pipeClient.SendDataAsync(fileIndexResult);
+                await pipeClient.ConnectAsync();
             }
-            catch (TimeoutException)
+            var filesInDirectory = await scanner.GetTextFilesAsync(directoryPath);
+
+            if (!filesInDirectory.Any())
             {
-                Console.WriteLine($"Agent {agentId}: Connection to Master timed out.");
-                pipeClient.Close();
-                await Task.Delay(5000);
+                Console.WriteLine($"[{agentName}] No text files found in directory.");
             }
-            catch (FileNotFoundException fnfEx)
+            else
             {
                 Console.WriteLine(
-                    $"Agent {agentId}: File '{fnfEx.FileName}' not found. Waiting for next command."
+                    $"[{agentName}] Found {filesInDirectory.Count} text files to process."
                 );
+                foreach (var file in filesInDirectory)
+                {
+                    Console.WriteLine($"[{agentName}] Processing file: {Path.GetFileName(file)}");
+                    var fileIndexResult = await scanner.ScanFileAsync(file);
+                    await pipeClient.SendDataAsync(fileIndexResult);
+                }
             }
-            catch (Exception ex)
-            {
-                Console.WriteLine(
-                    $"Agent {agentId}: Unexpected error - '{ex.Message}'. Attempting to recover pipe connection..."
-                );
-                pipeClient.Close();
-                await Task.Delay(5000);
-            }
+
+            await pipeClient.SendEndOfDataMarker();
+            Console.WriteLine($"[{agentName}] Processing completed.");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Agent {agentId}: Unexpected error - '{ex.Message}'.");
+            return;
         }
 
-        pipeClient.Close();
-        Console.WriteLine($"Agent {agentId} has shut down.");
+        pipeClient.Dispose();
     }
 }

@@ -1,153 +1,113 @@
-using System;
-using System.IO;
 using System.IO.Pipes;
-using System.Threading.Tasks;
-using System.Collections.Generic; // For List<string>
+using Master.Models;
 
 namespace Master.Services
 {
     public class PipeServer : IDisposable
     {
         private NamedPipeServerStream? _pipeServer;
-        private StreamWriter? _streamWriter;
         private StreamReader? _streamReader;
         private readonly string _pipeName;
+        private readonly string _agentName;
 
         public bool IsClientConnected => _pipeServer?.IsConnected ?? false;
 
-        public PipeServer(string pipeName)
+        public PipeServer(string pipeName, string agentName)
         {
             if (string.IsNullOrWhiteSpace(pipeName))
                 throw new ArgumentNullException(nameof(pipeName));
             _pipeName = pipeName;
+            _agentName = agentName;
         }
 
-        public async Task WaitForConnectionAsync()
+        public async Task WaitForConnectionAsync(int timeout = 10000)
         {
             try
             {
                 _pipeServer?.Dispose();
-
-                _pipeServer = new NamedPipeServerStream(
-                    _pipeName,
-                    PipeDirection.InOut // for two-way communication
-                );
+                _pipeServer = new NamedPipeServerStream(_pipeName, PipeDirection.In);
 
                 Console.WriteLine(
-                    $"Pipe server '{_pipeName}' created. Waiting for agent connection..."
+                    $"[Master] Pipe server '{_pipeName}' created. Waiting for agent connection..."
                 );
                 await _pipeServer.WaitForConnectionAsync();
 
                 if (_pipeServer.IsConnected)
                 {
-                    _streamWriter = new StreamWriter(_pipeServer) { AutoFlush = true };
                     _streamReader = new StreamReader(_pipeServer);
-                    Console.WriteLine($"Agent connected to pipe '{_pipeName}'.");
+                    Console.WriteLine($"[{_agentName}] Connected.");
                 }
                 else
                 {
-                    Console.WriteLine(
-                        $"Agent connection to pipe '{_pipeName}' failed after WaitForConnectionAsync."
-                    );
+                    Console.WriteLine($"[{_agentName}] Connection failed after waiting.");
                     _pipeServer?.Dispose();
                     _pipeServer = null;
                 }
             }
-            catch (IOException ex)
-            {
-                Console.WriteLine(
-                    $"IOException on pipe '{_pipeName}' during connection: {ex.Message}. This might happen if the pipe name is already in use or access is denied."
-                );
-                _pipeServer?.Dispose();
-                _pipeServer = null;
-                throw;
-            }
             catch (Exception ex)
             {
-                Console.WriteLine(
-                    $"Error waiting for connection on pipe '{_pipeName}': {ex.Message}"
-                );
+                Console.WriteLine($"[{_agentName}] Error connecting: {ex.Message}");
                 _pipeServer?.Dispose();
                 _pipeServer = null;
                 throw;
             }
         }
 
-        public async Task SendCommandAsync(string command)
-        {
-            if (!IsClientConnected || _streamWriter == null)
-            {
-                throw new InvalidOperationException(
-                    "Client is not connected. Call WaitForConnectionAsync first."
-                );
-            }
-            if (string.IsNullOrEmpty(command))
-            {
-                Console.WriteLine("Cannot send an empty command.");
-                return;
-            }
-
-            try
-            {
-                await _streamWriter.WriteLineAsync(command);
-                Console.WriteLine($"Sent command '{command}' to agent on pipe '{_pipeName}'.");
-            }
-            catch (IOException ex)
-            {
-                Console.WriteLine($"IO Error sending command on pipe '{_pipeName}': {ex.Message}");
-                throw;
-            }
-        }
-
-        public async Task<List<string>> ReceiveDataAsync()
+        public async Task ReceiveDataAsync(DataAggregator aggregator)
         {
             if (!IsClientConnected || _streamReader == null)
             {
-                throw new InvalidOperationException(
-                    "Client is not connected. Call WaitForConnectionAsync first."
-                );
+                throw new InvalidOperationException($"[Master] {_agentName} is not connected.");
             }
 
-            var receivedLines = new List<string>();
-            string? line;
-            Console.WriteLine($"Waiting to receive data from agent on pipe '{_pipeName}'...");
             try
             {
+                Console.WriteLine($"[{_agentName}] Sending data...");
+                string? line;
+                int processedLines = 0;
+
                 while ((line = await _streamReader.ReadLineAsync()) != null)
                 {
-                    if (line.Equals("END_OF_FILE_DATA", StringComparison.OrdinalIgnoreCase))
+                    if (line.Equals("END_OF_DATA", StringComparison.OrdinalIgnoreCase))
                     {
-                        // Stop reading when marker is received
-                        break;
+                        Console.WriteLine(
+                            $"[{_agentName}] Finished sending data. Processed {processedLines} entries."
+                        );
+                        return;
                     }
-                    receivedLines.Add(line);
+
+                    try
+                    {
+                        var agentData = AgentData.Parse(line);
+                        if (agentData != null)
+                        {
+                            aggregator.Aggregate(agentData);
+                            processedLines++;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine($"[{_agentName}] Error parsing data: {ex.Message}");
+                        Console.WriteLine($"[{_agentName}] Problematic line: {line}");
+                    }
                 }
+
+                Console.WriteLine($"[{_agentName}] Disconnected before sending END_OF_DATA.");
             }
-            catch (IOException ex)
+            catch (IOException)
             {
-                Console.WriteLine($"IO Error receiving data on pipe '{_pipeName}': {ex.Message}");
-                throw;
+                Console.WriteLine($"[{_agentName}] Disconnected unexpectedly.");
             }
-            Console.WriteLine($"Finished receiving data. Total lines: {receivedLines.Count}");
-            return receivedLines;
         }
 
-        public void CloseClientConnection()
+        public void Dispose()
         {
-            Console.WriteLine($"Closing client connection for pipe '{_pipeName}'.");
-            _streamWriter?.Dispose();
-            _streamWriter = null;
             _streamReader?.Dispose();
             _streamReader = null;
 
             _pipeServer?.Dispose();
             _pipeServer = null;
-        }
-
-        public void Dispose()
-        {
-            CloseClientConnection();
-            Console.WriteLine($"PipeServer for '{_pipeName}' disposed.");
+            Console.WriteLine($"[{_agentName}] Connection closed.");
             GC.SuppressFinalize(this);
         }
     }

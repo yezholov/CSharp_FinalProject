@@ -24,3 +24,7 @@ To test this version first start the Agent, type: `dotnet run ../TestData 1`; th
 
 **Commit 6**: Added support for multiple Agents, improved error handling. Updated `Program.cs`, improved output of multiple files in `ResultPrinter.cs`. Added aditional file with text: `test_data2.txt`.
 To test this version first start the first Agent, type: `dotnet run ../TestData 1` and the second Agent, type: `dotnet run ../TestData 2`; then start the Master, type: `dotnet run. `
+
+**Commit 7**: Code refactoring. Updated logging. Simplified Agent and Master work. Agent: receives a directory of arguments and transmits data about all files in the directory via pipe. Master: receives information about all files from all directories and outputs data.
+*Updated files*: WordIndex.cs (added output of indices to string), PipeClient.cs (removed support for receiving data, changed end of data handling, improved logging), PipeServer.cs (code refactoring, removed support for sending data, improved processing of received data, improved logging), also updated both Program.cs files to support the required functionality, improved error handling, improved logging.
+To test this version first start the first Agent, type: `dotnet run ../TestData 1` and the second Agent, type: `dotnet run ../TestData 2`; then start the Master, type: `dotnet run. `*In this update, you can run files in any order.*
