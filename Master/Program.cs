@@ -1,9 +1,34 @@
 ﻿using Master.Services;
+using System.Diagnostics;
+using System.Runtime.InteropServices;
 
 class Program
 {
     static async Task Main(string[] args)
     {
+        // Set CPU Affinity if supported
+        var coreCount = Environment.ProcessorCount;
+
+        if (!RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+        {
+            try
+            {
+                var process = Process.GetCurrentProcess();
+                process.ProcessorAffinity = new IntPtr(1); // Core 0
+                Console.WriteLine(
+                    $"Master process assigned to CPU core 0 (of {coreCount} cores available)"
+                );
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Warning: Could not set processor affinity: {ex.Message}");
+            }
+        }
+        else
+        {
+            Console.WriteLine($"CPU affinity is not supported on macOS");
+        }
+
         Console.WriteLine("[Master] Process started. Waiting for agents to connect...");
 
         var aggregator = new DataAggregator();

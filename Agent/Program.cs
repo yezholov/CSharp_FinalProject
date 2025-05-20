@@ -2,6 +2,8 @@
 using Agent.Services;
 using Agent.Models;
 using System.Collections.Concurrent;
+using System.Diagnostics;
+using System.Runtime.InteropServices;
 
 class Program
 {
@@ -24,6 +26,30 @@ class Program
         {
             Console.WriteLine("Error: Agent ID must be a positive integer for pipe naming.");
             return;
+        }
+
+        // Set CPU Affinity if supported
+        var coreCount = Environment.ProcessorCount;
+        var targetCore = agentId % coreCount;
+
+        if (!RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+        {
+            try
+            {
+                var process = Process.GetCurrentProcess();
+                process.ProcessorAffinity = new IntPtr(1 << targetCore);
+                Console.WriteLine(
+                    $"Agent {agentId} assigned to CPU core {targetCore} (of {coreCount} cores available)"
+                );
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Warning: Could not set processor affinity: {ex.Message}");
+            }
+        }
+        else
+        {
+            Console.WriteLine($"CPU affinity is not supported on macOS");
         }
 
         string pipeName = $"agent{agentId}_pipe";
