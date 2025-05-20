@@ -1,5 +1,7 @@
 ﻿using Agent.Helpers;
 using Agent.Services;
+using Agent.Models;
+using System.Collections.Concurrent;
 
 class Program
 {
@@ -26,6 +28,7 @@ class Program
 
         string pipeName = $"agent{agentId}_pipe";
         string agentName = $"Agent {agentId}";
+        var resultQueue = new BlockingCollection<FileIndex>();
 
         using var pipeClient = new PipeClient(pipeName, agentName);
         var scanner = new FileScanner();
@@ -40,34 +43,68 @@ class Program
             {
                 await pipeClient.ConnectAsync();
             }
-            var filesInDirectory = await scanner.GetTextFilesAsync(directoryPath);
 
+            var filesInDirectory = await scanner.GetTextFilesAsync(directoryPath);
             if (!filesInDirectory.Any())
             {
                 Console.WriteLine($"[{agentName}] No text files found in directory.");
-            }
-            else
-            {
-                Console.WriteLine(
-                    $"[{agentName}] Found {filesInDirectory.Count} text files to process."
-                );
-                foreach (var file in filesInDirectory)
-                {
-                    Console.WriteLine($"[{agentName}] Processing file: {Path.GetFileName(file)}");
-                    var fileIndexResult = await scanner.ScanFileAsync(file);
-                    await pipeClient.SendDataAsync(fileIndexResult);
-                }
+                return;
             }
 
-            await pipeClient.SendEndOfDataMarker();
-            Console.WriteLine($"[{agentName}] Processing completed.");
+            Console.WriteLine(
+                $"[{agentName}] Found {filesInDirectory.Count} text files to process."
+            );
+
+            // Task for processing files sequentially
+            var processingTask = Task.Run(async () =>
+            {
+                try
+                {
+                    foreach (var file in filesInDirectory)
+                    {
+                        Console.WriteLine(
+                            $"[{agentName}] Processing file: {Path.GetFileName(file)}"
+                        );
+                        var fileIndexResult = await scanner.ScanFileAsync(file);
+                        resultQueue.Add(fileIndexResult);
+                    }
+                }
+                finally
+                {
+                    Console.WriteLine($"[{agentName}] Processing completed.");
+                    resultQueue.CompleteAdding();
+                }
+            });
+
+            // Task for sending results
+            var sendingTask = Task.Run(async () =>
+            {
+                try
+                {
+                    foreach (var result in resultQueue.GetConsumingEnumerable())
+                    {
+                        await pipeClient.SendDataAsync(result);
+                        Console.WriteLine($"[{agentName}] Sent result to Master.");
+                    }
+                    await pipeClient.SendEndOfDataMarker();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"[{agentName}] Error sending data: {ex.Message}");
+                }
+                finally
+                {
+                    Console.WriteLine($"[{agentName}] Sending completed.");
+                }
+            });
+
+            await Task.WhenAll(processingTask, sendingTask);
+            Console.WriteLine($"[{agentName}] All tasks completed.");
         }
         catch (Exception ex)
         {
             Console.WriteLine($"Agent {agentId}: Unexpected error - '{ex.Message}'.");
             return;
         }
-
-        pipeClient.Dispose();
     }
 }
