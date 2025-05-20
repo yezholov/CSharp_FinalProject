@@ -35,3 +35,6 @@ To test this version first start the first Agent, type: `dotnet run ../TestDataA
 **Commit 9**: Added multi-core support. Each program runs on a separate core (if there are enough of them), for Master 1st core, for agents NumberOfAgent+1.
 **Attention**: ProcessorAffinity only supported on *Linux* and *Windows*. *MacOS* will not run this solution, so in *MacOS* multi-ciore suppot is disabled automatically.
 To test this version first start the first Agent, type: `dotnet run ../TestDataA 1` and the second Agent, type: `dotnet run ../TestDataB 2`; then start the Master, type: `dotnet run. `*In this update, you can run files in any order.*
+
+**Commit 10**: Added autostart of *Agents* via *Master* with `Process` (*tested in macOS, errors are possible on other platforms*). Updated logging.
+To test this version firsly (only one time) build Agent, type: `dotnet build` (or you can type `dotnet run`, to build and run), finally run Master, type: `dotnet run.`

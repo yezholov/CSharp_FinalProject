@@ -35,18 +35,18 @@ namespace Master.Services
                 if (_pipeServer.IsConnected)
                 {
                     _streamReader = new StreamReader(_pipeServer);
-                    Console.WriteLine($"[{_agentName}] Connected.");
+                    Console.WriteLine($"[Master / {_agentName}] Connected.");
                 }
                 else
                 {
-                    Console.WriteLine($"[{_agentName}] Connection failed after waiting.");
+                    Console.WriteLine($"[Master / {_agentName}] Connection failed after waiting.");
                     _pipeServer?.Dispose();
                     _pipeServer = null;
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"[{_agentName}] Error connecting: {ex.Message}");
+                Console.WriteLine($"[Master / {_agentName}] Error connecting: {ex.Message}");
                 _pipeServer?.Dispose();
                 _pipeServer = null;
                 throw;
@@ -62,7 +62,7 @@ namespace Master.Services
 
             try
             {
-                Console.WriteLine($"[{_agentName}] Sending data...");
+                Console.WriteLine($"[Master / {_agentName}] Receiving data...");
                 string? line;
                 int processedLines = 0;
 
@@ -71,7 +71,7 @@ namespace Master.Services
                     if (line.Equals("END_OF_DATA", StringComparison.OrdinalIgnoreCase))
                     {
                         Console.WriteLine(
-                            $"[{_agentName}] Finished sending data. Processed {processedLines} entries."
+                            $"[Master / {_agentName}] Finished receiving data. Processed {processedLines} entries."
                         );
                         return;
                     }
@@ -87,16 +87,20 @@ namespace Master.Services
                     }
                     catch (Exception ex)
                     {
-                        Console.WriteLine($"[{_agentName}] Error parsing data: {ex.Message}");
-                        Console.WriteLine($"[{_agentName}] Problematic line: {line}");
+                        Console.WriteLine(
+                            $"[Master / {_agentName}] Error parsing data: {ex.Message}"
+                        );
+                        Console.WriteLine($"[Master / {_agentName}] Problematic line: {line}");
                     }
                 }
 
-                Console.WriteLine($"[{_agentName}] Disconnected before sending END_OF_DATA.");
+                Console.WriteLine(
+                    $"[Master / {_agentName}] Disconnected before sending END_OF_DATA."
+                );
             }
             catch (IOException)
             {
-                Console.WriteLine($"[{_agentName}] Disconnected unexpectedly.");
+                Console.WriteLine($"[Master / {_agentName}] Disconnected unexpectedly.");
             }
         }
 
@@ -107,7 +111,7 @@ namespace Master.Services
 
             _pipeServer?.Dispose();
             _pipeServer = null;
-            Console.WriteLine($"[{_agentName}] Connection closed.");
+            Console.WriteLine($"[Master / {_agentName}] Connection closed.");
             GC.SuppressFinalize(this);
         }
     }

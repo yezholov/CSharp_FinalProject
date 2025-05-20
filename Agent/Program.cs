@@ -18,16 +18,19 @@ class Program
         string directoryPath = FileHelper.NormalizePath(args[0]);
         if (!Directory.Exists(directoryPath))
         {
-            Console.WriteLine($"Error: Directory '{directoryPath}' does not exist.");
+            Console.WriteLine($"[Agent] Error: Directory '{directoryPath}' does not exist.");
             return;
         }
 
         if (!int.TryParse(args[1], out int agentId) || agentId <= 0)
         {
-            Console.WriteLine("Error: Agent ID must be a positive integer for pipe naming.");
+            Console.WriteLine(
+                "[Agent] Error: Agent ID must be a positive integer for pipe naming."
+            );
             return;
         }
-
+        string pipeName = $"agent{agentId}_pipe";
+        string agentName = $"Agent {agentId}";
         // Set CPU Affinity if supported
         var coreCount = Environment.ProcessorCount;
         var targetCore = agentId % coreCount;
@@ -39,29 +42,29 @@ class Program
                 var process = Process.GetCurrentProcess();
                 process.ProcessorAffinity = new IntPtr(1 << targetCore);
                 Console.WriteLine(
-                    $"Agent {agentId} assigned to CPU core {targetCore} (of {coreCount} cores available)"
+                    $"[{agentName}] Assigned to CPU core {targetCore} (of {coreCount} cores available)"
                 );
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Warning: Could not set processor affinity: {ex.Message}");
+                Console.WriteLine(
+                    $"[{agentName}] Warning: Could not set processor affinity: {ex.Message}"
+                );
             }
         }
         else
         {
-            Console.WriteLine($"CPU affinity is not supported on macOS");
+            Console.WriteLine($"[{agentName}] CPU affinity is not supported on macOS");
         }
 
-        string pipeName = $"agent{agentId}_pipe";
-        string agentName = $"Agent {agentId}";
         var resultQueue = new BlockingCollection<FileIndex>();
 
         using var pipeClient = new PipeClient(pipeName, agentName);
         var scanner = new FileScanner();
 
-        Console.WriteLine(
-            $"Agent {agentId} started. \nDirectory: '{directoryPath}'. \nPipe: '{pipeName}'. \nWaiting for Master...\n"
-        );
+        //Console.WriteLine(
+        //    $"[Agent {agentId}] Started. \nDirectory: '{directoryPath}'. \nPipe: '{pipeName}'. \nWaiting for Master...\n"
+        //);
 
         try
         {
