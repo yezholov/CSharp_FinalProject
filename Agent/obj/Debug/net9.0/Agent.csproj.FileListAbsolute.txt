@@ -13,3 +13,18 @@
 /Users/ezh_off/Documents/GitHub/VU/Object-Oriented Programming /CSharp_FinalProject/Agent/obj/Debug/net9.0/Agent.pdb
 /Users/ezh_off/Documents/GitHub/VU/Object-Oriented Programming /CSharp_FinalProject/Agent/obj/Debug/net9.0/Agent.genruntimeconfig.cache
 /Users/ezh_off/Documents/GitHub/VU/Object-Oriented Programming /CSharp_FinalProject/Agent/obj/Debug/net9.0/ref/Agent.dll
+C:\Mac\Home\Documents\GitHub\VU\Object-Oriented Programming\CSharp_FinalProject\Agent\obj\Debug\net9.0\Agent.dll
+C:\Mac\Home\Documents\GitHub\VU\Object-Oriented Programming\CSharp_FinalProject\Agent\obj\Debug\net9.0\refint\Agent.dll
+C:\Mac\Home\Documents\GitHub\VU\Object-Oriented Programming\CSharp_FinalProject\Agent\obj\Debug\net9.0\Agent.pdb
+C:\Mac\Home\Documents\GitHub\VU\Object-Oriented Programming\CSharp_FinalProject\Agent\bin\Debug\net9.0\Agent.exe
+C:\Mac\Home\Documents\GitHub\VU\Object-Oriented Programming\CSharp_FinalProject\Agent\bin\Debug\net9.0\Agent.deps.json
+C:\Mac\Home\Documents\GitHub\VU\Object-Oriented Programming\CSharp_FinalProject\Agent\bin\Debug\net9.0\Agent.runtimeconfig.json
+C:\Mac\Home\Documents\GitHub\VU\Object-Oriented Programming\CSharp_FinalProject\Agent\bin\Debug\net9.0\Agent.dll
+C:\Mac\Home\Documents\GitHub\VU\Object-Oriented Programming\CSharp_FinalProject\Agent\bin\Debug\net9.0\Agent.pdb
+C:\Mac\Home\Documents\GitHub\VU\Object-Oriented Programming\CSharp_FinalProject\Agent\obj\Debug\net9.0\Agent.GeneratedMSBuildEditorConfig.editorconfig
+C:\Mac\Home\Documents\GitHub\VU\Object-Oriented Programming\CSharp_FinalProject\Agent\obj\Debug\net9.0\Agent.AssemblyInfoInputs.cache
+C:\Mac\Home\Documents\GitHub\VU\Object-Oriented Programming\CSharp_FinalProject\Agent\obj\Debug\net9.0\Agent.AssemblyInfo.cs
+C:\Mac\Home\Documents\GitHub\VU\Object-Oriented Programming\CSharp_FinalProject\Agent\obj\Debug\net9.0\Agent.csproj.CoreCompileInputs.cache
+C:\Mac\Home\Documents\GitHub\VU\Object-Oriented Programming\CSharp_FinalProject\Agent\obj\Debug\net9.0\Agent.sourcelink.json
+C:\Mac\Home\Documents\GitHub\VU\Object-Oriented Programming\CSharp_FinalProject\Agent\obj\Debug\net9.0\Agent.genruntimeconfig.cache
+C:\Mac\Home\Documents\GitHub\VU\Object-Oriented Programming\CSharp_FinalProject\Agent\obj\Debug\net9.0\ref\Agent.dll
