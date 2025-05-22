@@ -15,8 +15,8 @@ namespace Master.Models
 
         private AgentData(string fileName, string word, int count)
         {
-            FileName = fileName;
-            Word = word;
+            FileName = fileName ?? throw new ArgumentNullException(nameof(fileName));
+            Word = word ?? throw new ArgumentNullException(nameof(word));
             Count = count;
         }
 
@@ -24,11 +24,24 @@ namespace Master.Models
         Parse the data from the string
         Input: "FileName:Word:Count"
         Output: AgentData object
+        Throws ArgumentException if the input format is invalid
         */
         public static AgentData Parse(string dataLine)
         {
+            if (string.IsNullOrEmpty(dataLine))
+                throw new ArgumentException("Input string cannot be null or empty", nameof(dataLine));
+
             var parts = dataLine.Split(':');
-            return new AgentData(parts[0], parts[1], int.Parse(parts[2]));
+            if (parts.Length != 3)
+                throw new ArgumentException($"Invalid format. Expected 'FileName:Word:Count', got '{dataLine}'", nameof(dataLine));
+
+            if (string.IsNullOrEmpty(parts[0]) || string.IsNullOrEmpty(parts[1]))
+                throw new ArgumentException($"FileName and Word cannot be empty in '{dataLine}'", nameof(dataLine));
+
+            if (!int.TryParse(parts[2], out int count))
+                throw new ArgumentException($"Invalid count value in '{dataLine}'", nameof(dataLine));
+
+            return new AgentData(parts[0], parts[1], count);
         }
     }
 }

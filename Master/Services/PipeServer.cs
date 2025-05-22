@@ -67,13 +67,14 @@ namespace Master.Services
                 _logger.Log($"Receiving data...");
                 string? line;
                 int processedLines = 0;
+                int errorLines = 0;
 
                 while ((line = await _streamReader.ReadLineAsync()) != null) // Read the data from the stream
                 {
                     if (line.Equals("END_OF_DATA", StringComparison.OrdinalIgnoreCase)) // Check if the data is the end of the data
                     {
                         _logger.Log(
-                            $"Finished receiving data. Processed {processedLines} entries."
+                            $"Finished receiving data. Successfully processed {processedLines} entries, errors: {errorLines}."
                         );
                         return;
                     }
@@ -81,25 +82,31 @@ namespace Master.Services
                     try
                     {
                         var agentData = AgentData.Parse(line); // Parse the data
-                        if (agentData != null)
-                        {
-                            aggregator.Aggregate(agentData); // Aggregate the data
-                            processedLines++;
-                        }
+                        aggregator.Aggregate(agentData); // Aggregate the data
+                        processedLines++;
+                    }
+                    catch (ArgumentException ex)
+                    {
+                        errorLines++;
+                        _logger.Error($"Invalid data format: {ex.Message}");
                     }
                     catch (Exception ex)
                     {
+                        errorLines++;
                         _logger.Error(
-                            $"Error parsing data: {ex.Message}\nProblematic line: {line}"
+                            $"Error processing data: {ex.Message}\nProblematic line: {line}"
                         );
                     }
                 }
 
-                _logger.Error($"Disconnected before sending END_OF_DATA.");
+                _logger.Error(
+                    $"Disconnected before sending END_OF_DATA. Processed {processedLines} entries, errors: {errorLines}."
+                );
             }
             catch (IOException)
             {
                 _logger.Error($"Disconnected unexpectedly.");
+                throw;
             }
         }
 
