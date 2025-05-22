@@ -5,13 +5,16 @@
 **Author**: Kyrylo Yezholov <kyrylo.yezholov@sa.stud.vu.lt> @yezholov @kirillezh
 
 ## Launch project
+
 ### Via CLI
+
 1. Open Agent folder
 2. Run `dotnet build` command in the terminal (if it's not build yet)
 3. Open Master folder
 4. Run `dotnet run` command in the terminal
 
 ### Via IDE
+
 1. Build Agent project (if it's not build yet)
 2. Run Master project
 
@@ -19,11 +22,9 @@
 
 ## Limitation
 
-- **`Processor.ProcessorAffinity`**: does not work in MacOS due to limited support for this function, works correctly on Windows and Linux.
+- **`Processor.ProcessorAffinity`**: does not work in macOS due to limited support for this function, works correctly on Windows and Linux.
 - **`Process`(starting `Agent`s from Master project)**: Untested behavior in Linux
 - **`Logger`**: Some older or imperfect terminals may have unintended behavior of logging colors.
-
-
 
 ## Commit history:
 
@@ -54,11 +55,11 @@ To test this version first start the first Agent, type: `dotnet run ../TestData 
 To test this version first start the first Agent, type: `dotnet run ../TestDataA 1` and the second Agent, type: `dotnet run ../TestDataB 2`; then start the Master, type: `dotnet run. `*In this update, you can run files in any order.*
 
 **Commit 9**: Added multi-core support. Each program runs on a separate core (if there are enough of them), for Master 1st core, for agents NumberOfAgent+1.
-**Attention**: ProcessorAffinity only supported on *Linux* and *Windows*. *MacOS* will not run this solution, so in *MacOS* multi-ciore suppot is disabled automatically.
+**Attention**: ProcessorAffinity only supported on *Linux* and *Windows*. m*acOS* will not run this solution, so in ,m*acOS* multi-ciore support is disabled automatically.
 To test this version first start the first Agent, type: `dotnet run ../TestDataA 1` and the second Agent, type: `dotnet run ../TestDataB 2`; then start the Master, type: `dotnet run. `*In this update, you can run files in any order.*
 
 **Commit 10**: Added autostart of *Agent*s via *Master* with `Process` (*tested in macOS, errors are possible on other platforms*). Updated logging.
 To test this version firsly (only one time) build Agent, type: `dotnet build` (or you can type `dotnet run`, to build and run); then run Master, type: `dotnet run.`
 
-**Commit 11**: Add Logger to the Master(`Logger.cs`). Added comments into each .cs file. Tested autostart of *Agent*s via *Master* on *Windows*. Delete unnecessary code.
+**Commit 11**: Add Logger to the Master(`Logger.cs`). Added comments into each .cs file. Tested autostart of *Agent*s via *Master* on *Windows/macOS*. Delete unnecessary code.
 To test this version firsly (only one time) build Agent, type: `dotnet build` (or you can type `dotnet run`, to build and run), finally run Master, type: `dotnet run.`
