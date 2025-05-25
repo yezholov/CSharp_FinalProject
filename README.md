@@ -1,4 +1,4 @@
-# File Reading, Writing, and Directory Scanning
+# File content indexing using agents and a master process
 
 **Objective**: Create a distributed system consisting of three separate C# console applications
 
