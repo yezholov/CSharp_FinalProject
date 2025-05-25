@@ -9,8 +9,6 @@ namespace Agent.Services
         private StreamWriter? _streamWriter; // Stream writer
         private readonly string _pipeName; // Pipe name (name for connection)
         private readonly string _serverName = "."; // Represents the local machine
-        private readonly string _agentName; // Agent name (name of the agent for logging)
-
         public bool IsConnected => _pipeClient?.IsConnected ?? false;
 
         public PipeClient(string pipeName, string agentName)
@@ -18,7 +16,6 @@ namespace Agent.Services
             if (string.IsNullOrWhiteSpace(pipeName))
                 throw new ArgumentNullException(nameof(pipeName));
             _pipeName = pipeName;
-            _agentName = agentName;
         }
 
         //Connect to the master
